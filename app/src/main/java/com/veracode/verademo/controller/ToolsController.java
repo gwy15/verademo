@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
@@ -45,6 +46,12 @@ public class ToolsController {
 	private String ping(String host) {
 		String output = "";
 		Process proc;
+
+		// filter host
+		String pattern = "^((\\d+\\.\\d+\\.\\d+\\.\\d+)|(\\w+(\\.\\w+)*))$";
+		if (!Pattern.matches(pattern, host)) {
+			return "The host input is invalid.";
+		}
 
 		logger.info("Pinging: " + host);
 
