@@ -147,7 +147,7 @@ public class UserController {
 		}
 
 		Connection connect = null;
-		Statement sqlStatement = null;
+		PreparedStatement sqlStatement = null;
 
 		try {
 			// Get the Database Connection
@@ -158,11 +158,14 @@ public class UserController {
 			/* START BAD CODE */
 			// Execute the query
 			logger.info("Creating the Statement");
-			String sqlQuery = "select username, password, password_hint, created_at, last_login, real_name, blab_name from users where username='"
-					+ username + "' and password='" + md5(password) + "';";
-			sqlStatement = connect.createStatement();
+			sqlStatement = connect.prepareStatement(
+				"SELECT username, password, password_hint, created_at, last_login, real_name, blab_name " + 
+				"FROM users " + 
+				"WHERE username=? AND password=?;");
+			sqlStatement.setString(1, username);
+			sqlStatement.setString(2, md5(password));
 			logger.info("Execute the Statement");
-			ResultSet result = sqlStatement.executeQuery(sqlQuery);
+			ResultSet result = sqlStatement.executeQuery();
 			/* END BAD CODE */
 
 			// Did we find exactly 1 user that matched?
